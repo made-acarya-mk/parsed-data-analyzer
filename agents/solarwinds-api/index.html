@@ -1,0 +1,345 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>SolarWinds API Agent</title>
+
+    <!-- Global NOCEyes Design System -->
+    <link rel="stylesheet" href="../../css/global.css" />
+
+    <!-- Agent-specific styles -->
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+
+  <body>
+    <header class="app-header">
+      <div class="container">
+        <h1>NOCEyes Agent Hub</h1>
+        <p>SolarWinds API Agent</p>
+      </div>
+    </header>
+
+    <main class="container agent-page">
+      <!-- Back -->
+      <a href="../../index.html" class="back-button"> ← Back to Agent Hub </a>
+
+      <!-- Agent Header -->
+      <section class="agent-header">
+        <div>
+          <span class="agent-label">AGENT</span>
+
+          <h2>SolarWinds Alert Analyzer</h2>
+
+          <p>
+            Analyze SolarWinds API alert data and identify affected devices,
+            entities, and related alerts.
+          </p>
+        </div>
+      </section>
+
+      <!-- JSON Input -->
+      <section class="card input-card">
+        <div class="section-header">
+          <div>
+            <h2>SolarWinds JSON Input</h2>
+
+            <p>Paste the parsed SolarWinds API JSON data below.</p>
+          </div>
+        </div>
+
+        <textarea
+          id="jsonInput"
+          placeholder="Paste SolarWinds JSON data here..."
+          spellcheck="false"
+        ></textarea>
+
+        <div class="input-actions">
+          <button id="analyzeButton" type="button">Analyze Alerts</button>
+
+          <button id="clearButton" type="button" class="secondary-button">
+            Clear
+          </button>
+        </div>
+
+        <div id="errorMessage" class="error" role="alert"></div>
+      </section>
+
+      <!-- Summary -->
+      <section class="summary">
+        <div class="summary-card">
+          <span>Active Alerts</span>
+          <strong id="activeAlerts">0</strong>
+        </div>
+
+        <div class="summary-card">
+          <span>Affected Devices</span>
+          <strong id="affectedDevices">0</strong>
+        </div>
+
+        <div class="summary-card">
+          <span>Affected Entities</span>
+          <strong id="affectedEntities">0</strong>
+        </div>
+
+        <div class="summary-card">
+          <span>Impact Scope</span>
+          <strong id="impactScope" class="summary-value-text"> — </strong>
+        </div>
+      </section>
+
+      <!-- Alert Context -->
+      <section class="card">
+        <div class="section-header">
+          <div>
+            <h2>Alert Context</h2>
+
+            <p>Context information extracted from the primary alert.</p>
+          </div>
+        </div>
+
+        <div class="context-grid">
+          <div class="context-item context-wide">
+            <span>Alert Title</span>
+
+            <strong id="alertTitle"> — </strong>
+          </div>
+
+          <div class="context-item context-wide">
+            <span>Alert Message</span>
+
+            <strong id="alertMessage" class="multiline-value"> — </strong>
+          </div>
+
+          <div class="context-item">
+            <span>Primary Entity</span>
+
+            <strong id="primaryEntity"> — </strong>
+          </div>
+        </div>
+      </section>
+
+      <!-- Primary Alert Summary -->
+      <section class="card">
+        <div class="section-header">
+          <div>
+            <h2>Primary Alert Summary</h2>
+
+            <p>Details of the primary device or entity.</p>
+          </div>
+        </div>
+
+        <div class="primary-grid">
+          <div class="detail-item">
+            <span>Device</span>
+            <strong id="primaryDevice">—</strong>
+          </div>
+
+          <div class="detail-item">
+            <span>Alert Type</span>
+            <strong id="primaryAlertType">—</strong>
+          </div>
+
+          <div class="detail-item">
+            <span>Status</span>
+            <strong id="primaryStatus">—</strong>
+          </div>
+
+          <div class="detail-item">
+            <span>Vendor</span>
+            <strong id="primaryVendor">—</strong>
+          </div>
+
+          <div class="detail-item">
+            <span>IP Address</span>
+            <strong id="primaryIp">—</strong>
+          </div>
+
+          <div class="detail-item">
+            <span>Location</span>
+            <strong id="primaryLocation">—</strong>
+          </div>
+
+          <div class="detail-item">
+            <span>Contact</span>
+            <strong id="primaryContact">—</strong>
+          </div>
+
+          <div class="detail-item">
+            <span>Node ID</span>
+            <strong id="primaryNodeId">—</strong>
+          </div>
+        </div>
+      </section>
+
+      <!-- Affected Devices -->
+      <!-- <section class="card">
+        <div class="server-header">
+          <div>
+            <h2>Affected Devices / Entities</h2>
+            <p>Unique devices and entities detected in the alert data.</p>
+          </div>
+
+          <div class="server-actions">
+            <button
+              id="copyEntityListButton"
+              type="button"
+              class="secondary-button"
+            >
+              Copy List
+            </button>
+
+            <span id="affectedCount" class="detail-count"> 0 entities </span>
+          </div>
+        </div>
+
+        <div id="affectedDeviceList" class="entity-list">
+          <p class="empty-state">No affected devices detected.</p>
+        </div>
+      </section> -->
+
+      <!-- Alert Details -->
+      <!-- <section class="card">
+        <div class="detail-header">
+          <div>
+            <h2>Alert Details</h2>
+            <p>Detailed information for each SolarWinds alert.</p>
+          </div>
+
+          <div class="detail-actions">
+            <label for="severityFilter">Severity</label>
+
+            <select id="severityFilter">
+              <option value="all">All Severities</option>
+            </select>
+
+            <span id="detailCount" class="detail-count"> 0 alerts </span>
+          </div>
+        </div>
+
+        <div class="table-wrapper">
+          <table class="alert-table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Entity</th>
+                <th>Alert Type</th>
+                <th>Severity</th>
+                <th>Description</th>
+              </tr>
+            </thead>
+
+            <tbody id="alertDetailsBody">
+              <tr>
+                <td colspan="5" class="empty-state">
+                  No alert details available.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section> -->
+      <section class="card alert-data-card">
+        <!-- Toggle Header -->
+        <div class="data-toggle">
+          <button
+            id="affectedDevicesTab"
+            type="button"
+            class="toggle-button active"
+          >
+            Affected Devices
+          </button>
+
+          <button id="alertDetailsTab" type="button" class="toggle-button">
+            Alert Details
+          </button>
+        </div>
+
+        <!-- Affected Devices -->
+        <div id="affectedDevicesPanel" class="toggle-panel active">
+          <div class="server-header">
+            <div>
+              <h2>Affected Devices / Entities</h2>
+              <p>Unique devices and entities detected in the alert data.</p>
+            </div>
+
+            <div class="server-actions">
+              <button
+                id="copyEntityListButton"
+                type="button"
+                class="secondary-button"
+              >
+                Copy List
+              </button>
+
+              <span id="affectedCount" class="detail-count"> 0 entities </span>
+            </div>
+          </div>
+
+          <div id="affectedDeviceList" class="entity-list">
+            <p class="empty-state">No affected devices detected.</p>
+          </div>
+        </div>
+
+        <!-- Alert Details -->
+        <div id="alertDetailsPanel" class="toggle-panel">
+          <div class="detail-header">
+            <div>
+              <h2>Alert Details</h2>
+              <p>Detailed information for each SolarWinds alert.</p>
+            </div>
+
+            <div class="detail-actions">
+              <label for="severityFilter"> Severity </label>
+
+              <select id="severityFilter">
+                <option value="all">All Severities</option>
+              </select>
+
+              <span id="detailCount" class="detail-count"> 0 alerts </span>
+            </div>
+          </div>
+
+          <div class="table-wrapper">
+            <table class="alert-table">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Entity</th>
+                  <th>Alert Type</th>
+                  <th>Severity</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+
+              <tbody id="alertDetailsBody">
+                <tr>
+                  <td colspan="5" class="empty-state">
+                    No alert details available.
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+      <!-- Correlated Alerts -->
+      <section class="card">
+        <div class="section-header">
+          <div>
+            <h2>Correlated Alerts</h2>
+
+            <p>Related symptoms and alerts detected in the dataset.</p>
+          </div>
+        </div>
+
+        <div id="correlatedAlerts" class="correlated-list">
+          <p class="empty-state">No correlated alerts detected.</p>
+        </div>
+      </section>
+    </main>
+
+    <script src="./script.js"></script>
+  </body>
+</html>

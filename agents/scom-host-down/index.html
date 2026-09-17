@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>SCOM - Host Down Analyzer</title>
+
+    <link rel="stylesheet" href="../../css/global.css" />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+
+  <body>
+    <!-- APP HEADER -->
+    <header class="app-header">
+      <div class="container">
+        <h1>NOCEyes Agent Hub</h1>
+        <p>SCOM Host Down Analyzer</p>
+      </div>
+    </header>
+
+    <main class="container agent-page">
+
+      <!-- BACK TO AGENT HUB -->
+      <a href="../../index.html" class="back-button">
+        ← Back to Agent Hub
+      </a>
+
+      <!-- AGENT HEADER -->
+      <section class="agent-header">
+        <div>
+          <span class="agent-label">AGENT</span>
+
+          <h2>SCOM Host Down Analyzer</h2>
+
+          <p>
+            Analyze SCOM monitoring alerts and identify affected hosts.
+          </p>
+        </div>
+      </section>
+
+      <!-- JSON INPUT -->
+      <section class="card">
+        <h2>SCOM Alert Data</h2>
+
+        <textarea
+          id="jsonInput"
+          placeholder="Paste SCOM JSON data here..."
+        ></textarea>
+
+        <button id="analyzeButton" type="button">
+          Analyze Alerts
+        </button>
+
+        <div id="errorMessage" class="error"></div>
+      </section>
+
+      <!-- SUMMARY -->
+      <section class="summary">
+        <div class="summary-card">
+          <span>Total Alerts</span>
+          <strong id="totalAlerts">0</strong>
+        </div>
+
+        <div class="summary-card">
+          <span>Affected Hosts</span>
+          <strong id="affectedHosts">0</strong>
+        </div>
+
+        <div class="summary-card">
+          <span>Error Alerts</span>
+          <strong id="errorAlerts">0</strong>
+        </div>
+      </section>
+
+      <!-- SERVER LIST -->
+      <section class="card">
+        <div class="server-header">
+          <div>
+            <h2>Affected Server List</h2>
+            <p id="serverCount">0 servers</p>
+          </div>
+
+          <button id="copyButton" type="button">
+            Copy Server List
+          </button>
+        </div>
+
+        <div id="serverList" class="server-list">
+          <p class="empty-state">
+            No servers detected yet.
+          </p>
+        </div>
+      </section>
+
+      <!-- SERVER ALERT DETAILS -->
+      <section class="card">
+        <div class="detail-header">
+          <div>
+            <h2>Alert Details</h2>
+            <p>
+              Detailed information for each SCOM alert.
+            </p>
+          </div>
+
+          <span id="detailCount" class="detail-count">
+            0 alerts
+          </span>
+        </div>
+
+        <div class="table-wrapper">
+          <table class="alert-table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Server Name</th>
+                <th>Error Name</th>
+                <th>Severity</th>
+              </tr>
+            </thead>
+
+            <tbody id="alertDetailsBody">
+              <tr>
+                <td colspan="4" class="empty-state">
+                  No alert details available.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+    </main>
+
+    <script src="../../js/utils.js"></script>
+    <script src="script.js"></script>
+  </body>
+</html>

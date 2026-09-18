@@ -1,0 +1,382 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Pure1 - Array Latency Write</title>
+
+    <link rel="stylesheet" href="../../css/global.css" />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+
+  <body>
+    <!-- APP HEADER -->
+    <header class="app-header">
+      <div class="container">
+        <h1>NOCEyes Agent Hub</h1>
+        <p>Pure1 - Array Latency Write</p>
+      </div>
+    </header>
+
+    <main class="container agent-page">
+      <!-- BACK TO AGENT HUB -->
+      <a href="../../index.html" class="back-button"> ← Back to Agent Hub </a>
+
+      <!-- AGENT HEADER -->
+      <section class="agent-header">
+        <div>
+          <span class="agent-label">AGENT</span>
+
+          <h2>Pure1 - Array Latency Write</h2>
+
+          <p>
+            Analyze Pure1 array write latency alerts and compare the affected
+            array against peer arrays.
+          </p>
+        </div>
+      </section>
+
+      <!-- JSON INPUT -->
+      <section class="card input-card">
+        <div class="section-header">
+          <div>
+            <h2>Pure1 Parsed Alert Data</h2>
+
+            <p>Paste the Parsed Data JSON returned by NOCEyes.</p>
+          </div>
+        </div>
+
+        <textarea
+          id="jsonInput"
+          placeholder="Paste Pure1 Parsed Alert JSON here..."
+        ></textarea>
+
+        <div class="input-actions">
+          <button id="analyzeButton" type="button">Analyze Alert</button>
+
+          <button id="clearButton" type="button" class="secondary-button">
+            Clear
+          </button>
+        </div>
+
+        <div id="errorMessage" class="error"></div>
+      </section>
+
+      <!-- ALERT OVERVIEW -->
+      <section class="alert-overview card">
+        <div class="alert-overview-main">
+          <div>
+            <span class="section-label"> ALERT </span>
+
+            <h2 id="alertName">Pure1 - Array Latency Write</h2>
+
+            <p id="alertDescription">No alert data analyzed yet.</p>
+          </div>
+
+          <div class="alert-status">
+            <span id="statusBadge" class="status-badge status-unknown">
+              Unknown
+            </span>
+          </div>
+        </div>
+
+        <div class="alert-meta-grid">
+          <div class="meta-item">
+            <span>Array</span>
+            <strong id="arrayName">—</strong>
+          </div>
+
+          <div class="meta-item">
+            <span>Current Write Latency</span>
+            <strong id="currentLatency">—</strong>
+          </div>
+
+          <div class="meta-item">
+            <span>Aggregation</span>
+            <strong id="aggregation">—</strong>
+          </div>
+
+          <div class="meta-item">
+            <span>Last Observed</span>
+            <strong id="lastObserved">—</strong>
+          </div>
+
+          <div class="meta-item">
+            <span>FQDN</span>
+            <strong id="arrayFqdn">—</strong>
+          </div>
+
+          <div class="meta-item">
+            <span>Metric</span>
+            <strong id="metricName">—</strong>
+          </div>
+        </div>
+      </section>
+
+      <!-- SUMMARY -->
+      <section class="summary">
+        <div class="summary-card">
+          <span>Current Latency</span>
+          <strong id="summaryCurrent">—</strong>
+        </div>
+
+        <div class="summary-card">
+          <span>Peak Latency</span>
+          <strong id="summaryPeak">—</strong>
+        </div>
+
+        <div class="summary-card">
+          <span>Initial Latency</span>
+          <strong id="summaryInitial">—</strong>
+        </div>
+
+        <div class="summary-card">
+          <span>Increase</span>
+          <strong id="summaryIncrease">—</strong>
+        </div>
+
+        <div class="summary-card">
+          <span>Peer Median</span>
+          <strong id="summaryPeerMedian">—</strong>
+        </div>
+
+        <div class="summary-card">
+          <span>Deviation</span>
+          <strong id="summaryDeviation">—</strong>
+        </div>
+
+        <div class="summary-card">
+          <span>Sample Count</span>
+          <strong id="summarySamples">—</strong>
+        </div>
+
+        <div class="summary-card">
+          <span>Resolution</span>
+          <strong id="summaryResolution">—</strong>
+        </div>
+      </section>
+
+      <!-- TARGET TREND -->
+      <section class="card">
+        <div class="section-header">
+          <div>
+            <span class="section-label"> TARGET ARRAY </span>
+
+            <h2>Write Latency Trend</h2>
+
+            <p id="trendDescription">
+              Target array latency over the available samples.
+            </p>
+          </div>
+
+          <span id="trendBadge" class="detail-count"> 0 samples </span>
+        </div>
+
+        <div id="trendChart" class="trend-chart">
+          <div class="chart-empty">No trend data available.</div>
+        </div>
+      </section>
+
+      <!-- PEER COMPARISON -->
+      <section class="card">
+        <div class="section-header">
+          <div>
+            <span class="section-label"> PEER COMPARISON </span>
+
+            <h2>Array Write Latency</h2>
+
+            <p>
+              Latest write latency across all arrays in the Parsed Alert Data.
+            </p>
+          </div>
+
+          <span id="peerCount" class="detail-count"> 0 arrays </span>
+        </div>
+
+        <div class="table-wrapper">
+          <table class="peer-table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Array</th>
+                <th>Latest Latency</th>
+                <th>Difference</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+
+            <tbody id="peerTableBody">
+              <tr>
+                <td colspan="5" class="empty-state">No peer data available.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ALERT DECISION -->
+      <!-- <section class="card">
+
+        <div class="section-header">
+
+          <div>
+            <span class="section-label">
+              TRIAGE
+            </span>
+
+            <h2>Alert Decision</h2>
+
+            <p>
+              Operational information available from the
+              Parsed Alert Data.
+            </p>
+          </div>
+
+        </div>
+
+        <div class="decision-grid">
+
+          <div class="decision-item">
+            <span>Alert Occurrence</span>
+
+            <strong id="decisionOccurrence">
+              —
+            </strong>
+          </div>
+
+          <div class="decision-item">
+            <span>Metric Duration</span>
+
+            <strong id="decisionDuration">
+              —
+            </strong>
+          </div>
+
+          <div class="decision-item">
+            <span>Persistence &gt; 5 Minutes</span>
+
+            <strong id="decisionPersistence">
+              Unknown
+            </strong>
+          </div>
+
+          <div class="decision-item">
+            <span>Threshold</span>
+
+            <strong id="decisionThreshold">
+              Not available
+            </strong>
+          </div>
+
+          <div class="decision-item">
+            <span>Threshold Status</span>
+
+            <strong id="decisionThresholdStatus">
+              Unmapped
+            </strong>
+          </div>
+
+          <div class="decision-item decision-action">
+            <span>Recommended Action</span>
+
+            <strong id="decisionAction">
+              Continue monitoring
+            </strong>
+          </div>
+
+        </div>
+
+      </section> -->
+      <!-- DECISION -->
+      <section class="card decision-card">
+        <div class="section-header">
+          <div>
+            <span class="section-label"> TRIAGE DECISION </span>
+
+            <h2>Alert Decision</h2>
+
+            <p>
+              Operational assessment based on the available Pure1 Parsed Alert
+              Data and triage context.
+            </p>
+          </div>
+
+          <span id="decisionBadge" class="status-badge status-unknown">
+            Unknown
+          </span>
+        </div>
+
+        <div class="decision-main">
+          <div class="decision-summary">
+            <span class="decision-title-label"> Decision </span>
+
+            <h3 id="decisionStatus">Awaiting Analysis</h3>
+
+            <p id="decisionReason">No alert has been analyzed yet.</p>
+          </div>
+        </div>
+
+        <div class="decision-sections">
+          <!-- Evidence -->
+          <div class="decision-section">
+            <span class="decision-section-label"> Evidence </span>
+
+            <div id="decisionEvidence" class="evidence-list">
+              <div class="decision-empty">No evidence available.</div>
+            </div>
+          </div>
+
+          <!-- Recommended Action -->
+          <div class="decision-section">
+            <span class="decision-section-label"> Recommended Action </span>
+
+            <p id="decisionAction" class="decision-action-text">
+              Continue monitoring
+            </p>
+          </div>
+
+          <!-- Escalation Target -->
+          <div class="decision-section">
+            <span class="decision-section-label"> Escalation Target </span>
+
+            <p id="decisionEscalation" class="decision-action-text">
+              Not applicable
+            </p>
+          </div>
+
+          <!-- Data Gaps -->
+          <div class="decision-section">
+            <span class="decision-section-label"> Data Gaps </span>
+
+            <div id="decisionDataGaps" class="data-gap-list">
+              <div class="decision-empty">No data gaps identified.</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TECHNICAL DETAILS -->
+      <section class="card raw-data-card">
+        <details>
+          <summary>Technical Details / Raw Parsed Data</summary>
+
+          <div class="raw-section">
+            <h3>Target Resource</h3>
+
+            <pre id="technicalResource">—</pre>
+          </div>
+
+          <div class="raw-section">
+            <h3>Parsed Data</h3>
+
+            <pre id="rawData">—</pre>
+          </div>
+        </details>
+      </section>
+    </main>
+
+    <script src="../../js/utils.js"></script>
+    <script src="script.js"></script>
+  </body>
+</html>

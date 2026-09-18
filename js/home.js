@@ -1,4 +1,5 @@
 const agents = [
+  // SCOM Host Down Analyzer
   {
     id: "scom-host-down",
     name: "SCOM Host Down Analyzer",
@@ -18,6 +19,7 @@ const agents = [
     path: "agents/scom-host-down/index.html"
   },
 
+  // SolarWinds API Agent Analyzer
   {
     id: "solarwinds-api",
     name: "SolarWinds API Agent Analyzer",
@@ -32,6 +34,22 @@ const agents = [
     path: "agents/solarwinds-api/index.html"
   },
 
+  // Pure1 - Array Latency Write Analyzer
+  {
+    id: "pure1-array-latency-write",
+    name: "Pure1 - Array Latency Write",
+    description:
+      "Analyze Pure1 array write latency alerts and compare the affected array against peer arrays.",
+    icon: "💾",
+    category: "Pure1",
+    version: "1.0.0",
+    input: "Pure1 Parsed Alert JSON",
+    output: "Latency Analysis",
+    status: "available",
+    path: "agents/pure1-array-latency-write/index.html"
+  },
+
+  // More Agents
   {
     id: "coming-soon",
     name: "More Agents",
